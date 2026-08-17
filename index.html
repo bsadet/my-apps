@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>100 Albums</title>
+
+<!-- PWA / iPhone meta tags -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="100 Albums">
+<meta name="theme-color" content="#141428">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="description" content="Parcours d'écoute — 100 albums incontournables">
+
+<!-- Inline PWA manifest -->
+<link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22100%20Albums%20Incontournables%22%2C%22short_name%22%3A%22100%20Albums%22%2C%22start_url%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23141428%22%2C%22theme_color%22%3A%22%23141428%22%2C%22orientation%22%3A%22portrait%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%2520xmlns%3D%2527http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%2527%2520viewBox%3D%270%200%20512%20512%2527%253E%253Crect%2520width%3D%2527512%2527%2520height%3D%2527512%2527%2520rx%3D%2527100%2527%2520fill%3D%2527%2523141428%2527%2F%253E%253Ctext%2520x%3D%2527256%2527%2520y%3D%2527340%2527%2520font-size%3D%2527280%2527%2520text-anchor%3D%2527middle%2527%253E%25F0%259F%258E%25B5%253C%2Ftext%253E%253C%2Fsvg%253E%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%5D%7D">
+
+<!-- Apple touch icon (emoji fallback) -->
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='100' fill='%23141428'/><text x='256' y='340' font-size='280' text-anchor='middle'>🎵</text></svg>">
+
+<style>
+  :root {
+    color-scheme: light;
+    --surface-0:    #eeeef2;
+    --surface-1:    #ffffff;
+    --surface-2:    #f4f4f7;
+    --surface-3:    #e2e2e8;
+    --border:       rgba(0,0,30,0.09);
+    --shadow-row:   0 1px 3px rgba(0,0,30,0.07), 0 0 0 1px rgba(0,0,30,0.05);
+    --shadow-hover: 0 4px 12px rgba(0,0,30,0.10), 0 0 0 1px rgba(0,0,30,0.07);
+    --text-primary:   #0f0f1a;
+    --text-secondary: #52516a;
+    --text-muted:     #8888a8;
+    --accent:       #2a78d6;
+    --accent-strong:#256abf;
+    --done-fill:        #0e8f60;
+    --done-fill-bright: #1baf7a;
+    --done-bg:          #e9f5ef;
+    --done-bg-hover:    #dcf0e7;
+    --done-text:        #0a6b47;
+    --g-rock:    #eb6834;
+    --g-hiphop:  #2a78d6;
+    --g-soul:    #eda100;
+    --g-jazz:    #4a3aa7;
+    --g-electro: #e87ba4;
+    --g-pop:     #1baf7a;
+    --g-world:   #008300;
+    --g-punk:    #e34948;
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --transition: 0.14s ease;
+
+    /* Safe area pour iPhone avec notch / Dynamic Island */
+    --sat: env(safe-area-inset-top, 0px);
+    --sab: env(safe-area-inset-bottom, 0px);
+    --sal: env(safe-area-inset-left, 0px);
+    --sar: env(safe-area-inset-right, 0px);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: var(--surface-0);
+    color: var(--text-primary);
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: 0 0 calc(56px + var(--sab));
+  }
+
+  /* ── Header ── */
+  .header {
+    background: linear-gradient(150deg, #141428 0%, #1e1e38 55%, #1a2240 100%);
+    padding: calc(20px + var(--sat)) 28px 22px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 80% at 90% 50%, rgba(42,120,214,0.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .header-eyebrow {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+    margin-bottom: 6px;
+  }
+  .header-title {
+    font-size: 1.55rem;
+    font-weight: 750;
+    letter-spacing: -0.025em;
+    color: #ffffff;
+    line-height: 1.15;
+    margin-bottom: 4px;
+  }
+  .header-subtitle { font-size: 0.82rem; color: rgba(255,255,255,0.5); }
+
+  /* ── Progress ── */
+  .progress-section {
+    background: var(--surface-1);
+    border-bottom: 1px solid var(--border);
+    padding: 18px 28px;
+  }
+  .stats-row {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+    align-items: flex-end;
+  }
+  .stat { display: flex; flex-direction: column; gap: 2px; }
+  .stat-value {
+    font-size: 1.7rem;
+    font-weight: 750;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+  }
+  .stat-value.done { color: var(--done-fill); }
+  .stat-value.todo { color: var(--text-primary); }
+  .stat-value.pct  { color: var(--accent); }
+  .stat-label { font-size: 0.68rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 500; }
+  .stat-divider { width: 1px; height: 32px; background: var(--border); align-self: center; }
+
+  .progress-bar-wrap { background: var(--surface-3); border-radius: 99px; height: 6px; overflow: hidden; }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--done-fill-bright), #11c485);
+    border-radius: 99px;
+    transition: width 0.45s cubic-bezier(.4,0,.2,1);
+  }
+
+  /* ── Genre bars ── */
+  .genre-bars {
+    padding: 16px 28px;
+    background: var(--surface-1);
+    border-bottom: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+  }
+  .genre-bar-item { display: flex; flex-direction: column; gap: 6px; }
+  .genre-bar-header { display: flex; justify-content: space-between; align-items: center; }
+  .genre-bar-name { font-size: 0.71rem; color: var(--text-secondary); display: flex; align-items: center; gap: 6px; font-weight: 500; }
+  .genre-bar-name .dot { width: 7px; height: 7px; border-radius: 50%; }
+  .genre-bar-count { font-size: 0.71rem; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+  .genre-bar-track { background: var(--surface-3); border-radius: 99px; height: 4px; overflow: hidden; }
+  .genre-bar-fill  { height: 100%; border-radius: 99px; transition: width 0.45s cubic-bezier(.4,0,.2,1); }
+
+  .genre-bars-toggle {
+    display: none;
+    width: 100%;
+    padding: 10px 28px;
+    background: var(--surface-1);
+    border: none;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-family: inherit;
+    align-items: center;
+    gap: 8px;
+    justify-content: space-between;
+  }
+  .genre-bars-toggle:hover { color: var(--text-primary); }
+  .genre-bars-toggle .toggle-chevron { transition: transform 0.2s ease; font-size: 0.7rem; color: var(--text-muted); }
+  .genre-bars-toggle.open .toggle-chevron { transform: rotate(180deg); }
+
+  /* ── Genre legend ── */
+  .genre-legend {
+    padding: 12px 28px;
+    background: var(--surface-1);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .legend-label { font-size: 0.68rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 500; margin-right: 2px; }
+  .genre-dot {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.76rem;
+    color: var(--text-secondary);
+    padding: 4px 10px 4px 6px;
+    border-radius: 99px;
+    background: var(--surface-0);
+    cursor: pointer;
+    border: 1.5px solid transparent;
+    transition: var(--transition);
+    user-select: none;
+    font-weight: 500;
+  }
+  .genre-dot:hover { border-color: var(--gc, var(--border)); color: var(--text-primary); background: var(--surface-2); }
+  .genre-dot.active { border-color: var(--gc); color: var(--text-primary); background: var(--surface-1); font-weight: 600; }
+  .genre-dot .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+  /* ── Filters ── */
+  .filters {
+    padding: 10px 28px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+    background: rgba(238,238,242,0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .filter-group { display: flex; gap: 4px; }
+  .filter-btn {
+    padding: 5px 13px;
+    border-radius: 99px;
+    border: 1.5px solid var(--border);
+    background: var(--surface-1);
+    color: var(--text-secondary);
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: var(--transition);
+    font-weight: 500;
+    font-family: inherit;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .filter-btn:hover { border-color: var(--accent); color: var(--text-primary); }
+  .filter-btn.active { background: var(--accent-strong); border-color: var(--accent-strong); color: #fff; font-weight: 600; }
+
+  .search-wrap { flex: 1; min-width: 160px; }
+  .search-input {
+    width: 100%;
+    background: var(--surface-1);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-size: 0.78rem;
+    padding: 5px 10px 5px 30px;
+    outline: none;
+    transition: var(--transition);
+    font-family: inherit;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238888a8' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: 9px center;
+    -webkit-appearance: none;
+  }
+  .search-input::placeholder { color: var(--text-muted); }
+  .search-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(42,120,214,0.12); }
+
+  .decade-group { display: flex; gap: 4px; flex-wrap: wrap; }
+
+  /* ── Album list ── */
+  .album-list {
+    padding: 16px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .album-row {
+    display: grid;
+    grid-template-columns: 28px 24px 1fr auto;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 14px;
+    border-radius: var(--radius-md);
+    background: var(--surface-1);
+    box-shadow: var(--shadow-row);
+    cursor: pointer;
+    transition: box-shadow var(--transition), transform var(--transition), background var(--transition);
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .album-row:hover { background: var(--surface-2); box-shadow: var(--shadow-hover); transform: translateY(-1px); }
+  .album-row:active { transform: scale(0.985); box-shadow: var(--shadow-row); }
+  .album-row.done { background: var(--done-bg); box-shadow: none; }
+  .album-row.done:hover { background: var(--done-bg-hover); box-shadow: var(--shadow-row); transform: translateY(-1px); }
+
+  .album-num { font-size: 0.68rem; color: var(--text-muted); font-variant-numeric: tabular-nums; text-align: right; font-weight: 500; }
+
+  .checkbox {
+    width: 20px; height: 20px;
+    border-radius: 5px;
+    border: 2px solid var(--surface-3);
+    background: var(--surface-0);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: background var(--transition), border-color var(--transition), box-shadow var(--transition);
+  }
+  .album-row:hover .checkbox { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(42,120,214,0.12); }
+  .album-row.done .checkbox { background: var(--done-fill); border-color: var(--done-fill); box-shadow: none; }
+  .checkbox svg { display: none; }
+  .album-row.done .checkbox svg { display: block; }
+
+  .album-info { min-width: 0; }
+  .album-title { font-size: 0.87rem; font-weight: 550; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.3; color: var(--text-primary); }
+  .album-row.done .album-title { color: var(--done-text); text-decoration: line-through; text-decoration-color: rgba(14,143,96,0.35); font-weight: 400; }
+  .album-artist { font-size: 0.74rem; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px; }
+  .album-row.done .album-artist { color: var(--text-muted); }
+
+  .album-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
+  .album-year { font-size: 0.69rem; color: var(--text-muted); font-variant-numeric: tabular-nums; font-weight: 500; }
+  .genre-tag { display: inline-flex; align-items: center; gap: 4px; font-size: 0.63rem; padding: 2px 8px 2px 5px; border-radius: 99px; font-weight: 650; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); background: var(--surface-3); }
+  .genre-tag .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+
+  .empty-state { text-align: center; padding: 56px 24px; color: var(--text-muted); font-size: 0.9rem; }
+  .empty-state::before { content: '🔍'; display: block; font-size: 2rem; margin-bottom: 10px; opacity: 0.5; }
+
+  /* ── Toast de sauvegarde ── */
+  .save-toast {
+    position: fixed;
+    bottom: calc(24px + var(--sab));
+    left: 50%;
+    transform: translateX(-50%) translateY(8px);
+    background: #1e1e38;
+    color: #fff;
+    font-size: 0.78rem;
+    padding: 8px 16px;
+    border-radius: 99px;
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 100;
+    font-family: inherit;
+  }
+  .save-toast.visible { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ── Mobile ── */
+  @media (max-width: 600px) {
+    body { padding-bottom: calc(32px + var(--sab)); }
+    .header { padding-top: calc(16px + var(--sat)); padding-left: 18px; padding-right: 18px; padding-bottom: 16px; }
+    .header-title { font-size: 1.2rem; }
+    .progress-section { padding: 14px 18px; }
+    .stats-row { gap: 16px; margin-bottom: 12px; }
+    .stat-value { font-size: 1.35rem; }
+    .stat-divider { display: none; }
+    .genre-bars-toggle { display: flex; padding: 10px 18px; }
+    .genre-bars { display: none; padding: 12px 18px; }
+    .genre-bars.visible { display: grid; }
+    .genre-legend { padding: 10px 18px; gap: 6px; }
+    .filters { padding: 8px 18px; gap: 6px; flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+    .filters::-webkit-scrollbar { display: none; }
+    .filters .legend-label { display: none; }
+    .filter-group { flex-shrink: 0; }
+    .decade-group { flex-shrink: 0; }
+    .search-wrap { flex-shrink: 0; min-width: 130px; }
+    .album-list { padding: 10px 18px; gap: 4px; }
+    .album-row { grid-template-columns: 22px 22px 1fr auto; gap: 9px; padding: 10px 11px; }
+    .genre-tag { display: none; }
+  }
+
+  @media (max-width: 600px) {
+    .genre-bars { display: none; }
+    .genre-bars.visible { display: grid; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-eyebrow">Parcours d'écoute</div>
+  <div class="header-title">100 Albums Incontournables</div>
+  <div class="header-subtitle">Coche les albums au fil de ta découverte</div>
+</div>
+
+<div class="progress-section">
+  <div class="stats-row">
+    <div class="stat">
+      <span class="stat-value done" id="stat-done">0</span>
+      <span class="stat-label">Écoutés</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <span class="stat-value todo" id="stat-todo">100</span>
+      <span class="stat-label">Restants</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <span class="stat-value pct" id="stat-pct">0%</span>
+      <span class="stat-label">Progression</span>
+    </div>
+  </div>
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+  </div>
+</div>
+
+<button class="genre-bars-toggle" id="genre-bars-toggle" aria-expanded="false">
+  <span>Progression par genre</span>
+  <span class="toggle-chevron">▼</span>
+</button>
+<div class="genre-bars" id="genre-bars"></div>
+
+<div class="genre-legend" id="genre-legend">
+  <span class="legend-label">Genres</span>
+</div>
+
+<div class="filters">
+  <span class="legend-label">Statut</span>
+  <div class="filter-group">
+    <button class="filter-btn active" data-filter="all">Tous</button>
+    <button class="filter-btn" data-filter="todo">À écouter</button>
+    <button class="filter-btn" data-filter="done">Écoutés</button>
+  </div>
+  <span class="legend-label">Décennie</span>
+  <div class="decade-group" id="decade-filters">
+    <button class="filter-btn active" data-decade="all">Toutes</button>
+  </div>
+  <div class="search-wrap">
+    <input class="search-input" id="search" placeholder="Artiste, album…" type="text" autocomplete="off">
+  </div>
+</div>
+
+<div class="album-list" id="album-list"></div>
+<div class="save-toast" id="save-toast">✓ Sauvegardé</div>
+
+<script>
+// Mobile genre-bars toggle
+(function() {
+  const btn = document.getElementById('genre-bars-toggle');
+  const bars = document.getElementById('genre-bars');
+  if (btn && bars) {
+    btn.addEventListener('click', function() {
+      const open = bars.classList.toggle('visible');
+      btn.classList.toggle('open', open);
+      btn.setAttribute('aria-expanded', open);
+    });
+  }
+})();
+
+const STORAGE_KEY = '100albums_listened_v1';
+
+const GENRES = {
+  rock:    { label: 'Rock',      color: '#eb6834' },
+  hiphop:  { label: 'Hip-hop',   color: '#2a78d6' },
+  soul:    { label: 'Soul/Funk', color: '#eda100' },
+  jazz:    { label: 'Jazz',      color: '#4a3aa7' },
+  electro: { label: 'Électro',   color: '#e87ba4' },
+  pop:     { label: 'Pop',       color: '#1baf7a' },
+  world:   { label: 'World',     color: '#008300' },
+  punk:    { label: 'Punk',      color: '#e34948' },
+};
+
+const ALBUMS = [
+  {n:1,  artist:"The Beatles",              album:"Abbey Road",                                      year:1969, genre:"rock"},
+  {n:2,  artist:"Marvin Gaye",              album:"What's Going On",                                 year:1971, genre:"soul"},
+  {n:3,  artist:"Pink Floyd",               album:"The Dark Side of the Moon",                       year:1973, genre:"rock"},
+  {n:4,  artist:"Miles Davis",              album:"Kind of Blue",                                    year:1959, genre:"jazz"},
+  {n:5,  artist:"Bob Dylan",                album:"Highway 61 Revisited",                            year:1965, genre:"rock"},
+  {n:6,  artist:"The Beatles",              album:"Revolver",                                        year:1966, genre:"rock"},
+  {n:7,  artist:"Stevie Wonder",            album:"Songs in the Key of Life",                        year:1976, genre:"soul"},
+  {n:8,  artist:"The Rolling Stones",       album:"Exile on Main St.",                               year:1972, genre:"rock"},
+  {n:9,  artist:"Led Zeppelin",             album:"Led Zeppelin IV",                                 year:1971, genre:"rock"},
+  {n:10, artist:"The Beach Boys",           album:"Pet Sounds",                                      year:1966, genre:"pop"},
+  {n:11, artist:"Joni Mitchell",            album:"Blue",                                            year:1971, genre:"pop"},
+  {n:12, artist:"David Bowie",              album:"The Rise and Fall of Ziggy Stardust",             year:1972, genre:"rock"},
+  {n:13, artist:"Aretha Franklin",          album:"I Never Loved a Man the Way I Love You",         year:1967, genre:"soul"},
+  {n:14, artist:"The Velvet Underground & Nico", album:"The Velvet Underground & Nico",             year:1967, genre:"rock"},
+  {n:15, artist:"Jimi Hendrix",             album:"Are You Experienced",                             year:1967, genre:"rock"},
+  {n:16, artist:"The Doors",                album:"The Doors",                                       year:1967, genre:"rock"},
+  {n:17, artist:"Fleetwood Mac",            album:"Rumours",                                         year:1977, genre:"rock"},
+  {n:18, artist:"Bruce Springsteen",        album:"Born to Run",                                     year:1975, genre:"rock"},
+  {n:19, artist:"Neil Young",               album:"Harvest",                                         year:1972, genre:"rock"},
+  {n:20, artist:"Simon & Garfunkel",        album:"Bridge Over Troubled Water",                      year:1970, genre:"pop"},
+  {n:21, artist:"James Brown",              album:"Live at the Apollo",                              year:1963, genre:"soul"},
+  {n:22, artist:"Otis Redding",             album:"Otis Blue",                                       year:1965, genre:"soul"},
+  {n:23, artist:"Al Green",                 album:"Call Me",                                         year:1973, genre:"soul"},
+  {n:24, artist:"Sly & the Family Stone",   album:"There's a Riot Goin' On",                        year:1971, genre:"soul"},
+  {n:25, artist:"Funkadelic",               album:"Maggot Brain",                                    year:1971, genre:"soul"},
+  {n:26, artist:"The Clash",                album:"London Calling",                                  year:1979, genre:"punk"},
+  {n:27, artist:"Ramones",                  album:"Ramones",                                         year:1976, genre:"punk"},
+  {n:28, artist:"Sex Pistols",              album:"Never Mind the Bollocks",                         year:1977, genre:"punk"},
+  {n:29, artist:"Joy Division",             album:"Unknown Pleasures",                               year:1979, genre:"punk"},
+  {n:30, artist:"Talking Heads",            album:"Remain in Light",                                 year:1980, genre:"rock"},
+  {n:31, artist:"The Cure",                 album:"Disintegration",                                  year:1989, genre:"rock"},
+  {n:32, artist:"The Smiths",               album:"The Queen Is Dead",                               year:1986, genre:"rock"},
+  {n:33, artist:"R.E.M.",                   album:"Murmur",                                          year:1983, genre:"rock"},
+  {n:34, artist:"Sonic Youth",              album:"Daydream Nation",                                 year:1988, genre:"rock"},
+  {n:35, artist:"Pixies",                   album:"Doolittle",                                       year:1989, genre:"rock"},
+  {n:36, artist:"Prince",                   album:"Purple Rain",                                     year:1984, genre:"pop"},
+  {n:37, artist:"Michael Jackson",          album:"Thriller",                                        year:1982, genre:"pop"},
+  {n:38, artist:"Madonna",                  album:"Like a Prayer",                                   year:1989, genre:"pop"},
+  {n:39, artist:"Kate Bush",                album:"Hounds of Love",                                  year:1985, genre:"pop"},
+  {n:40, artist:"Paul Simon",               album:"Graceland",                                       year:1986, genre:"world"},
+  {n:41, artist:"Kraftwerk",                album:"Trans-Europe Express",                            year:1977, genre:"electro"},
+  {n:42, artist:"Brian Eno",                album:"Another Green World",                             year:1975, genre:"electro"},
+  {n:43, artist:"New Order",                album:"Power, Corruption & Lies",                        year:1983, genre:"electro"},
+  {n:44, artist:"Depeche Mode",             album:"Violator",                                        year:1990, genre:"electro"},
+  {n:45, artist:"Daft Punk",                album:"Discovery",                                       year:2001, genre:"electro"},
+  {n:46, artist:"Nirvana",                  album:"Nevermind",                                       year:1991, genre:"rock"},
+  {n:47, artist:"Pearl Jam",                album:"Ten",                                             year:1991, genre:"rock"},
+  {n:48, artist:"Radiohead",                album:"OK Computer",                                     year:1997, genre:"rock"},
+  {n:49, artist:"My Bloody Valentine",      album:"Loveless",                                        year:1991, genre:"rock"},
+  {n:50, artist:"The Smashing Pumpkins",    album:"Siamese Dream",                                   year:1993, genre:"rock"},
+  {n:51, artist:"Massive Attack",           album:"Blue Lines",                                      year:1991, genre:"electro"},
+  {n:52, artist:"Portishead",               album:"Dummy",                                           year:1994, genre:"electro"},
+  {n:53, artist:"Aphex Twin",               album:"Selected Ambient Works 85–92",                    year:1992, genre:"electro"},
+  {n:54, artist:"The Prodigy",              album:"The Fat of the Land",                             year:1997, genre:"electro"},
+  {n:55, artist:"DJ Shadow",                album:"Endtroducing…..",                                  year:1996, genre:"electro"},
+  {n:56, artist:"Public Enemy",             album:"It Takes a Nation of Millions to Hold Us Back",   year:1988, genre:"hiphop"},
+  {n:57, artist:"N.W.A",                    album:"Straight Outta Compton",                          year:1988, genre:"hiphop"},
+  {n:58, artist:"A Tribe Called Quest",     album:"The Low End Theory",                              year:1991, genre:"hiphop"},
+  {n:59, artist:"Dr. Dre",                  album:"The Chronic",                                     year:1992, genre:"hiphop"},
+  {n:60, artist:"Wu-Tang Clan",             album:"Enter the Wu-Tang (36 Chambers)",                 year:1993, genre:"hiphop"},
+  {n:61, artist:"Nas",                      album:"Illmatic",                                        year:1994, genre:"hiphop"},
+  {n:62, artist:"The Notorious B.I.G.",     album:"Ready to Die",                                    year:1994, genre:"hiphop"},
+  {n:63, artist:"2Pac",                     album:"All Eyez on Me",                                  year:1996, genre:"hiphop"},
+  {n:64, artist:"Lauryn Hill",              album:"The Miseducation of Lauryn Hill",                 year:1998, genre:"hiphop"},
+  {n:65, artist:"OutKast",                  album:"Aquemini",                                        year:1998, genre:"hiphop"},
+  {n:66, artist:"Bob Marley & The Wailers", album:"Exodus",                                          year:1977, genre:"world"},
+  {n:67, artist:"Fela Kuti",                album:"Zombie",                                          year:1976, genre:"world"},
+  {n:68, artist:"Buena Vista Social Club",  album:"Buena Vista Social Club",                         year:1997, genre:"world"},
+  {n:69, artist:"Caetano Veloso",           album:"Transa",                                          year:1972, genre:"world"},
+  {n:70, artist:"Serge Gainsbourg",         album:"Histoire de Melody Nelson",                       year:1971, genre:"pop"},
+  {n:71, artist:"Charles Mingus",           album:"Mingus Ah Um",                                    year:1959, genre:"jazz"},
+  {n:72, artist:"John Coltrane",            album:"A Love Supreme",                                  year:1965, genre:"jazz"},
+  {n:73, artist:"The Dave Brubeck Quartet", album:"Time Out",                                        year:1959, genre:"jazz"},
+  {n:74, artist:"Herbie Hancock",           album:"Head Hunters",                                    year:1973, genre:"jazz"},
+  {n:75, artist:"Stan Getz & João Gilberto",album:"Getz/Gilberto",                                   year:1964, genre:"jazz"},
+  {n:76, artist:"Black Sabbath",            album:"Paranoid",                                        year:1970, genre:"rock"},
+  {n:77, artist:"Metallica",                album:"Master of Puppets",                               year:1986, genre:"rock"},
+  {n:78, artist:"AC/DC",                    album:"Back in Black",                                   year:1980, genre:"rock"},
+  {n:79, artist:"Guns N' Roses",            album:"Appetite for Destruction",                        year:1987, genre:"rock"},
+  {n:80, artist:"Rage Against the Machine", album:"Rage Against the Machine",                        year:1992, genre:"rock"},
+  {n:81, artist:"Björk",                    album:"Homogenic",                                       year:1997, genre:"pop"},
+  {n:82, artist:"Beck",                     album:"Odelay",                                          year:1996, genre:"rock"},
+  {n:83, artist:"The Strokes",              album:"Is This It",                                      year:2001, genre:"rock"},
+  {n:84, artist:"Arcade Fire",              album:"Funeral",                                         year:2004, genre:"rock"},
+  {n:85, artist:"LCD Soundsystem",          album:"Sound of Silver",                                 year:2007, genre:"electro"},
+  {n:86, artist:"Amy Winehouse",            album:"Back to Black",                                   year:2006, genre:"soul"},
+  {n:87, artist:"Kanye West",               album:"My Beautiful Dark Twisted Fantasy",               year:2010, genre:"hiphop"},
+  {n:88, artist:"Kendrick Lamar",           album:"To Pimp a Butterfly",                             year:2015, genre:"hiphop"},
+  {n:89, artist:"Frank Ocean",              album:"Blonde",                                          year:2016, genre:"soul"},
+  {n:90, artist:"Beyoncé",                  album:"Lemonade",                                        year:2016, genre:"pop"},
+  {n:91, artist:"The xx",                   album:"xx",                                              year:2009, genre:"pop"},
+  {n:92, artist:"Tame Impala",              album:"Currents",                                        year:2015, genre:"rock"},
+  {n:93, artist:"Arctic Monkeys",           album:"AM",                                              year:2013, genre:"rock"},
+  {n:94, artist:"Daft Punk",                album:"Random Access Memories",                          year:2013, genre:"electro"},
+  {n:95, artist:"David Bowie",              album:"Blackstar",                                       year:2016, genre:"rock"},
+  {n:96, artist:"Sufjan Stevens",           album:"Illinois",                                        year:2005, genre:"pop"},
+  {n:97, artist:"Bon Iver",                 album:"For Emma, Forever Ago",                           year:2007, genre:"pop"},
+  {n:98, artist:"Phoebe Bridgers",          album:"Punisher",                                        year:2020, genre:"pop"},
+  {n:99, artist:"Tyler, the Creator",       album:"IGOR",                                            year:2019, genre:"hiphop"},
+  {n:100,artist:"Little Simz",              album:"Sometimes I Might Be Introvert",                  year:2021, genre:"hiphop"},
+];
+
+// ── Persistance localStorage ──
+function loadListened() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return new Set(JSON.parse(raw));
+  } catch(e) {}
+  return new Set();
+}
+
+function saveListened() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify([...listened]));
+    showToast();
+  } catch(e) {}
+}
+
+let toastTimer;
+function showToast() {
+  const t = document.getElementById('save-toast');
+  t.classList.add('visible');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('visible'), 1400);
+}
+
+// ── State ──
+const listened = loadListened();
+let filterStatus = 'all';
+let filterGenre  = 'all';
+let filterDecade = 'all';
+let searchQ = '';
+
+// ── Decade buttons ──
+const decades = [...new Set(ALBUMS.map(a => Math.floor(a.year / 10) * 10))].sort();
+const decadeWrap = document.getElementById('decade-filters');
+decades.forEach(d => {
+  const btn = document.createElement('button');
+  btn.className = 'filter-btn';
+  btn.dataset.decade = d;
+  btn.textContent = `${d}s`;
+  btn.addEventListener('click', () => {
+    filterDecade = d;
+    decadeWrap.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    render();
+  });
+  decadeWrap.appendChild(btn);
+});
+decadeWrap.querySelector('[data-decade="all"]').addEventListener('click', () => {
+  filterDecade = 'all';
+  decadeWrap.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  decadeWrap.querySelector('[data-decade="all"]').classList.add('active');
+  render();
+});
+
+// ── Genre chips ──
+const legendEl = document.getElementById('genre-legend');
+Object.entries(GENRES).forEach(([key, g]) => {
+  const chip = document.createElement('button');
+  chip.className = 'genre-dot';
+  chip.dataset.genre = key;
+  chip.style.setProperty('--gc', g.color);
+  chip.innerHTML = `<span class="dot" style="background:${g.color}"></span>${g.label}`;
+  chip.addEventListener('click', () => {
+    filterGenre = filterGenre === key ? 'all' : key;
+    legendEl.querySelectorAll('.genre-dot').forEach(c => c.classList.remove('active'));
+    if (filterGenre !== 'all') chip.classList.add('active');
+    render();
+  });
+  legendEl.appendChild(chip);
+});
+
+// ── Status filters ──
+document.querySelectorAll('[data-filter]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    filterStatus = btn.dataset.filter;
+    document.querySelectorAll('[data-filter]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    render();
+  });
+});
+
+// ── Search ──
+document.getElementById('search').addEventListener('input', e => {
+  searchQ = e.target.value.toLowerCase();
+  render();
+});
+
+// ── Genre mini-bars ──
+function renderGenreBars() {
+  const el = document.getElementById('genre-bars');
+  el.innerHTML = '';
+  Object.entries(GENRES).forEach(([key, g]) => {
+    const total = ALBUMS.filter(a => a.genre === key).length;
+    const done  = ALBUMS.filter(a => a.genre === key && listened.has(a.n)).length;
+    const pct   = total ? Math.round(done / total * 100) : 0;
+    el.innerHTML += `
+      <div class="genre-bar-item">
+        <div class="genre-bar-header">
+          <span class="genre-bar-name"><span class="dot" style="background:${g.color}"></span>${g.label}</span>
+          <span class="genre-bar-count">${done}/${total}</span>
+        </div>
+        <div class="genre-bar-track">
+          <div class="genre-bar-fill" style="width:${pct}%;background:${g.color}"></div>
+        </div>
+      </div>`;
+  });
+}
+
+// ── Main render ──
+function render() {
+  const done = listened.size;
+  const pct  = Math.round(done / 100 * 100);
+  document.getElementById('stat-done').textContent = done;
+  document.getElementById('stat-todo').textContent = 100 - done;
+  document.getElementById('stat-pct').textContent  = pct + '%';
+  document.getElementById('progress-fill').style.width = pct + '%';
+  renderGenreBars();
+
+  const filtered = ALBUMS.filter(a => {
+    if (filterStatus === 'done' && !listened.has(a.n)) return false;
+    if (filterStatus === 'todo' &&  listened.has(a.n)) return false;
+    if (filterGenre  !== 'all' && a.genre !== filterGenre) return false;
+    if (filterDecade !== 'all' && Math.floor(a.year/10)*10 !== filterDecade) return false;
+    if (searchQ && !(`${a.artist} ${a.album}`).toLowerCase().includes(searchQ)) return false;
+    return true;
+  });
+
+  const list = document.getElementById('album-list');
+  if (filtered.length === 0) {
+    list.innerHTML = '<div class="empty-state">Aucun album ne correspond à ces filtres.</div>';
+    return;
+  }
+
+  list.innerHTML = filtered.map(a => {
+    const isDone = listened.has(a.n);
+    const g = GENRES[a.genre];
+    return `
+    <div class="album-row${isDone ? ' done' : ''}" data-n="${a.n}">
+      <span class="album-num">${a.n}</span>
+      <div class="checkbox">
+        <svg width="12" height="10" viewBox="0 0 12 10" fill="none">
+          <path d="M1.5 5L4.5 8L10.5 1.5" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="album-info">
+        <div class="album-title">${a.album}</div>
+        <div class="album-artist">${a.artist}</div>
+      </div>
+      <div class="album-meta">
+        <span class="album-year">${a.year}</span>
+        <span class="genre-tag"><span class="dot" style="background:${g.color}"></span>${g.label}</span>
+      </div>
+    </div>`;
+  }).join('');
+
+  list.querySelectorAll('.album-row').forEach(row => {
+    row.addEventListener('click', () => {
+      const n = +row.dataset.n;
+      if (listened.has(n)) listened.delete(n); else listened.add(n);
+      saveListened();
+      render();
+    });
+  });
+}
+
+render();
+</script>
+</body>
+</html>
